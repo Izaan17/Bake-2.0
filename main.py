@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # Goal:
 # Make it easier to make python scripts into terminal commands.
 # MVP:
@@ -25,6 +24,9 @@ def create_parser() -> argparse.ArgumentParser:
     parser.add_argument("-i", "--install", action="store_true", help="Install bake.")
     parser.add_argument("-d", "--debug", default=False, action="store_true", help="Set debug status.")
     parser.add_argument("--uninstall", action="store_true", help="Uninstall bake.")
+    # Add --hard flag to uninstall
+    parser.add_argument("--hard", action="store_true", help="Also remove all bake command aliases during uninstall.")
+    parser.add_argument("-f", "--force", action="store_true", help="Skip confirmation prompts.")
 
     # Create subparsers for different actions
     subparsers = parser.add_subparsers(dest="action", help="The action to perform")
@@ -221,22 +223,56 @@ def install(args):
 def uninstall(args):
     printer = CustomPrinter(args.debug)
     try:
-        # Remove symbolic link
-        if os.path.exists(constants.INSTALL_LINK):
+        # Check if paths exist
+        wrapper_scripts_exists = os.path.exists(constants.WRAPPER_SCRIPTS_FOLDER)
+        install_link_exists = os.path.exists(constants.INSTALL_LINK)
+        install_dir_exists = os.path.exists(constants.INSTALL_DIR)
+
+        # For hard uninstall, confirm unless force flag is used
+        if args.hard and not args.force:
+            printer.warn("WARNING: Hard uninstall will remove all bake command aliases!")
+            printer.info("This will delete the following commands:")
+
+            # List commands that will be deleted
+            if wrapper_scripts_exists:
+                commands = os.listdir(constants.WRAPPER_SCRIPTS_FOLDER)
+                if commands:
+                    for cmd in commands:
+                        printer.print(f"  - {cmd}")
+                else:
+                    printer.info("  No commands found.")
+
+            confirm = input("\nAre you sure you want to proceed? [y/N]: ").lower()
+            if confirm != 'y':
+                printer.info("Uninstall cancelled.")
+                return
+
+        # Remove symbolic link if it exists
+        if install_link_exists:
             printer.info("Removing symbolic link...")
             os.remove(constants.INSTALL_LINK)
 
-        # Remove installation directory
-        if os.path.exists(constants.INSTALL_DIR):
+        # If hard uninstall requested, remove all command symlinks
+        if args.hard and wrapper_scripts_exists:
+            printer.info("Removing all bake command aliases...")
+            for cmd in os.listdir(constants.WRAPPER_SCRIPTS_FOLDER):
+                symlink_path = os.path.join(constants.USER_BIN_DIR, cmd)
+                if os.path.exists(symlink_path):
+                    os.remove(symlink_path)
+                    printer.debug(f"Removed alias: {cmd}")
+
+        # Remove installation directory if it exists
+        if install_dir_exists:
             printer.info("Removing installation directory...")
             shutil.rmtree(constants.INSTALL_DIR)
 
-        # Remove wrapper scripts folder
-        if os.path.exists(constants.WRAPPER_SCRIPTS_FOLDER):
-            printer.info("Removing wrapper scripts folder...")
-            shutil.rmtree(constants.WRAPPER_SCRIPTS_FOLDER)
-
         printer.success("Successfully uninstalled bake.")
+    except FileNotFoundError as e:
+        printer.error(f"File not found during uninstallation: {str(e)}")
+        sys.exit(1)
+    except PermissionError as e:
+        printer.error(f"Permission error during uninstallation: {str(e)}")
+        sys.exit(1)
     except Exception as e:
         printer.error(f"Uninstallation failed: {str(e)}")
         sys.exit(1)
