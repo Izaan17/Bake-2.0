@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # Goal:
 # Make it easier to make python scripts into terminal commands.
 # MVP:
