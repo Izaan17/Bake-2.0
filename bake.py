@@ -86,6 +86,11 @@ def ensure_bin_in_path():
 
 
 def add_command(args, printer: CustomPrinter):
+    # Prevent creating a command named "bake"
+    if args.name.lower() == "bake":
+        printer.error('Cannot create a command named "bake" as it would conflict with the main script.')
+        return
+
     script_path = os.path.abspath(args.script_path)
     if not os.path.exists(script_path):
         printer.error(f"Script not found: {script_path}")
