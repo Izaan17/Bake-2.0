@@ -97,6 +97,22 @@ def add_command(args, printer: CustomPrinter):
         return
 
     wrapper_path = os.path.join(constants.WRAPPER_SCRIPTS_FOLDER, args.name)
+    symlink_path = os.path.join(constants.USER_BIN_DIR, args.name)
+
+    # Check if command already exists and confirm overwrite
+    if (os.path.exists(wrapper_path) or os.path.exists(symlink_path)) and not args.force:
+        printer.warn(f"Command '{args.name}' already exists!")
+        if os.path.exists(wrapper_path):
+            with open(wrapper_path, 'r') as f:
+                content = f.read()
+                current_script = content.split('script_path = "')[1].split('"')[0]
+                printer.info(f"Current script: {current_script}")
+                printer.info(f"New script: {script_path}")
+
+        confirm = printer.input("\nDo you want to overwrite it? [y/N]: ").lower()
+        if confirm != 'y':
+            printer.info("Command creation cancelled.")
+            return
 
     # Create wrapper script
     with open(wrapper_path, 'w') as f:
@@ -106,7 +122,6 @@ def add_command(args, printer: CustomPrinter):
     os.chmod(wrapper_path, 0o755)
 
     # Create symlink
-    symlink_path = os.path.join(constants.USER_BIN_DIR, args.name)
     if os.path.exists(symlink_path):
         os.remove(symlink_path)
     os.symlink(wrapper_path, symlink_path)
