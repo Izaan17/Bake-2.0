@@ -1,6 +1,7 @@
 # Bake - Python Script Command Manager
 
-Bake is a simple tool that makes it easy to convert your Python scripts into terminal commands. Instead of typing `python3 /path/to/your/script.py`, you can create simple command aliases that run your scripts from anywhere.
+Bake is a simple tool that makes it easy to convert your Python scripts into terminal commands. Instead of typing
+`python3 /path/to/your/script.py`, you can create simple command aliases that run your scripts from anywhere.
 
 ## Features
 
@@ -13,22 +14,26 @@ Bake is a simple tool that makes it easy to convert your Python scripts into ter
 ## Installation
 
 1. Clone this repository:
+
 ```bash
 git clone https://github.com/Izaan17/Bake-2.0.git
 cd bake
 ```
 
 2. Make the script executable:
+
 ```bash
 chmod +x bake.py
 ```
 
 3. Install bake:
+
 ```bash
 ./bake.py --install
 ```
 
 4. Restart your terminal or source your shell configuration:
+
 ```bash
 # For bash
 source ~/.bashrc
@@ -43,44 +48,78 @@ source ~/.config/fish/config.fish
 ## Usage
 
 ### Example File `hello.py`
+
 ```python
 print("hello world")
 ```
 
 ### Add a new command
+
 Convert a Python script into a command:
+
 ```bash
 bake add hello ~/scripts/hello.py
 ```
+
 Now you can run `hello` from anywhere in your terminal.
 
 ### List all commands
+
 View all installed commands:
+
 ```bash
 bake list
 ```
 
 ### Edit a command
+
 Open the wrapper script in your default editor (set by $EDITOR):
+
 ```bash
 bake edit hello
 ```
 
 ### Delete a command
+
 Remove a command:
+
 ```bash
 bake delete hello
 ```
 
-### Uninstall bake
-Remove bake and all its components:
+## Uninstalling
+
+### Basic Uninstall
+
+Remove Bake but keep all your command aliases:
+
 ```bash
 bake --uninstall
 ```
 
+### Hard Uninstall
+
+Remove Bake and all command aliases:
+
+```bash
+bake --uninstall --hard
+```
+
+This will show you what commands will be removed and ask for confirmation.
+
+To skip the confirmation prompt:
+
+```bash
+bake --uninstall --hard -f
+```
+
+> ⚠️ Warning: Hard uninstall will remove all commands created with Bake. Make sure to back up any important script paths
+> before proceeding.
+
 ## File Structure
 
 Bake creates the following directory structure in your home directory:
+
 ```
 ~/.local/
 ├── bin/          # Command symlinks
