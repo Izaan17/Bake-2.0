@@ -84,7 +84,7 @@ def add_command(args, printer: CustomPrinter):
         printer.error('Cannot create a command named "bake" as it would conflict with the main script.')
         return
 
-    script_path = os.path.abspath(args.script_path)
+    script_path = os.path.abspath(args.script_path.name)
     if not os.path.exists(script_path):
         printer.error(f"Script not found: {script_path}")
         return
@@ -306,6 +306,7 @@ def main() -> None:
 
     if args.version:
         printer.info(f"v{constants.VERSION}")
+        return
 
     if args.action:
         try:
