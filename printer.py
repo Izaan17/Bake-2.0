@@ -1,6 +1,7 @@
 from rich.console import Console
 from rich.text import Text
 
+
 class CustomPrinter(Console):
     def __init__(self, is_debug: bool = False):
         super().__init__()
