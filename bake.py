@@ -12,11 +12,11 @@ from printer import CustomPrinter
 
 
 def create_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(description="Bake: A tool for managing custom commands")
 
     # Optional arguments for main parser
     parser.add_argument("-i", "--install", action="store_true", help="Install bake.")
-    parser.add_argument("-d", "--debug", default=False, action="store_true", help="Set debug status.")
+    parser.add_argument("-d", "--debug", action="store_true", help="Set debug status.")
     parser.add_argument("--uninstall", action="store_true", help="Uninstall bake.")
     parser.add_argument("--hard", action="store_true", help="Also remove all bake command aliases during uninstall.")
     parser.add_argument("-f", "--force", action="store_true", help="Skip confirmation prompts.")
@@ -28,7 +28,7 @@ def create_parser() -> argparse.ArgumentParser:
     # Add command parser
     add_parser = subparsers.add_parser("add", help="Add a new command")
     add_parser.add_argument("name", type=str, help="Name of the command")
-    add_parser.add_argument("script_path", type=str, help="Path to the Python script")
+    add_parser.add_argument("script_path", type=argparse.FileType(), help="Path to the Python script")
 
     # Edit command parser
     edit_parser = subparsers.add_parser("edit", help="Edit an existing command")
