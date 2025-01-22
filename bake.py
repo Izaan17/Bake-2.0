@@ -1,11 +1,4 @@
 #!/usr/bin/env python3
-# Goal:
-# Make it easier to make python scripts into terminal commands.
-# MVP:
-#   - Be able to add a script as a command so you can easily run it in the terminal.
-#   - Be able to edit the wrapper script.
-#   - Be able to read each wrapper script.
-#   - Be able to delete the wrapper script.
 import argparse
 import os
 import shutil
@@ -25,9 +18,9 @@ def create_parser() -> argparse.ArgumentParser:
     parser.add_argument("-i", "--install", action="store_true", help="Install bake.")
     parser.add_argument("-d", "--debug", default=False, action="store_true", help="Set debug status.")
     parser.add_argument("--uninstall", action="store_true", help="Uninstall bake.")
-    # Add --hard flag to uninstall
     parser.add_argument("--hard", action="store_true", help="Also remove all bake command aliases during uninstall.")
     parser.add_argument("-f", "--force", action="store_true", help="Skip confirmation prompts.")
+    parser.add_argument("-v", "--version", action="store_true", help="Outputs the current version number")
 
     # Create subparsers for different actions
     subparsers = parser.add_subparsers(dest="action", help="The action to perform")
@@ -51,7 +44,7 @@ def create_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def create_wrapper_script(name: str, script_path: str) -> str:
+def create_wrapper_script(script_path: str) -> str:
     return f'''#!/usr/bin/env python3
 import sys
 import os
@@ -116,7 +109,7 @@ def add_command(args, printer: CustomPrinter):
 
     # Create wrapper script
     with open(wrapper_path, 'w') as f:
-        f.write(create_wrapper_script(args.name, script_path))
+        f.write(create_wrapper_script(script_path))
 
     # Make executable
     os.chmod(wrapper_path, 0o755)
@@ -157,7 +150,7 @@ def delete_command(args, printer: CustomPrinter):
     printer.success(f"Deleted command '{args.name}'")
 
 
-def list_commands(args, printer: CustomPrinter):
+def list_commands(printer: CustomPrinter):
     """List all installed commands with their target scripts"""
     if not os.path.exists(constants.WRAPPER_SCRIPTS_FOLDER):
         printer.warn("Wrapper scripts folder missing.")
@@ -321,7 +314,7 @@ def main() -> None:
                 case "delete":
                     delete_command(args, printer)
                 case "list":
-                    list_commands(args, printer)
+                    list_commands(printer)
         except Exception as e:
             printer.error(f"Operation failed: {str(e)}")
             sys.exit(1)
