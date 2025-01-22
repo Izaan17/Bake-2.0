@@ -12,34 +12,34 @@ from printer import CustomPrinter
 
 
 def create_parser() -> argparse.ArgumentParser:
+    # Create the main parser
     parser = argparse.ArgumentParser(description="Bake: A tool for managing custom commands")
 
-    # Optional arguments for main parser
-    parser.add_argument("-i", "--install", action="store_true", help="Install bake.")
-    parser.add_argument("-d", "--debug", action="store_true", help="Set debug status.")
-    parser.add_argument("--uninstall", action="store_true", help="Uninstall bake.")
-    parser.add_argument("--hard", action="store_true", help="Also remove all bake command aliases during uninstall.")
-    parser.add_argument("-f", "--force", action="store_true", help="Skip confirmation prompts.")
-    parser.add_argument("-v", "--version", action="store_true", help="Outputs the current version number")
+    # Group common installation/management flags
+    management_group = parser.add_argument_group("management options")
+    management_group.add_argument("-i", "--install", action="store_true", help="Install bake.")
+    management_group.add_argument("-d", "--debug", action="store_true", help="Set debug status.")
+    management_group.add_argument("--uninstall", action="store_true", help="Uninstall bake.")
+    management_group.add_argument("--hard", action="store_true",
+                                  help="Also remove all bake command aliases during uninstall.")
+    management_group.add_argument("-f", "--force", action="store_true", help="Skip confirmation prompts.")
+    management_group.add_argument("-v", "--version", action="store_true", help="Outputs the current version number")
 
-    # Create subparsers for different actions
+    # Create subparsers
     subparsers = parser.add_subparsers(dest="action", help="The action to perform")
 
-    # Add command parser
-    add_parser = subparsers.add_parser("add", help="Add a new command")
-    add_parser.add_argument("name", type=str, help="Name of the command")
+    # Create parent parser for commands that need a name argument
+    name_parser = argparse.ArgumentParser(add_help=False)
+    name_parser.add_argument("name", help="Name of the command")
+
+    # Add subparsers with their specific arguments
+    subparsers.add_parser("list", help="List all installed commands")
+
+    add_parser = subparsers.add_parser("add", help="Add a new command", parents=[name_parser])
     add_parser.add_argument("script_path", type=argparse.FileType(), help="Path to the Python script")
 
-    # Edit command parser
-    edit_parser = subparsers.add_parser("edit", help="Edit an existing command")
-    edit_parser.add_argument("name", help="Name of the command to edit")
-
-    # Delete command parser
-    delete_parser = subparsers.add_parser("delete", help="Delete an existing command")
-    delete_parser.add_argument("name", help="Name of the command to delete")
-
-    # List command parser
-    list_parser = subparsers.add_parser("list", help="List all installed commands")
+    subparsers.add_parser("edit", help="Edit an existing command", parents=[name_parser])
+    subparsers.add_parser("delete", help="Delete an existing command", parents=[name_parser])
 
     return parser
 
