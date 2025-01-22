@@ -3,6 +3,7 @@ import os
 # Get user's home directory
 HOME = os.path.expanduser("~")
 USER_BIN_DIR = os.path.join(HOME, ".local", "bin")
+VERSION = 1.0
 
 # Installation paths
 INSTALL_DIR = os.path.join(HOME, ".local", "lib", "bake")
@@ -14,6 +15,7 @@ WRAPPER_SCRIPTS_FOLDER = os.path.join(INSTALL_DIR, "scripts")
 
 # Shell detection
 SHELL_NAME = os.environ.get("SHELL", "").split("/")[-1]
+
 
 def get_shell_config_file():
     """Get the appropriate shell config file path"""

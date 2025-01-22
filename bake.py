@@ -304,6 +304,9 @@ def main() -> None:
         uninstall(args)
         return
 
+    if args.version:
+        printer.info(f"v{constants.VERSION}")
+
     if args.action:
         try:
             match args.action:
