@@ -20,19 +20,13 @@ git clone https://github.com/Izaan17/Bake-2.0.git
 cd bake
 ```
 
-2. Make the script executable:
+2. Install bake:
 
 ```bash
-chmod +x bake.py
+python bake.py --install
 ```
 
-3. Install bake:
-
-```bash
-./bake.py --install
-```
-
-4. Restart your terminal or source your shell configuration:
+3. Restart your terminal or source your shell configuration:
 
 ```bash
 # For bash
