@@ -142,12 +142,6 @@ actions:
     list         List all installed commands
 ```
 
-## Notes
-
-- All commands are installed in your user space (`~/.local/`) - no sudo required
-- Bake automatically adds its bin directory to your PATH
-- You can use any text editor by setting the EDITOR environment variable
-
 ## Requirements
 
 - Python 3.6+
