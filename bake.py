@@ -57,7 +57,7 @@ if __name__ == "__main__":
 '''
 
 
-def ensure_bin_in_path():
+def ensure_bin_in_path() -> None:
     """Ensure user's local bin directory is in PATH"""
     bin_dir = os.path.dirname(constants.INSTALL_LINK)
     if not os.path.exists(bin_dir):
@@ -78,7 +78,7 @@ def ensure_bin_in_path():
             print(f"    source {shell_config}")
 
 
-def add_command(args, printer: CustomPrinter):
+def add_command(args: argparse.Namespace, printer: CustomPrinter) -> None:
     # Prevent creating a command named "bake"
     if args.name.lower() == "bake":
         printer.error('Cannot create a command named "bake" as it would conflict with the main script.')
@@ -122,7 +122,7 @@ def add_command(args, printer: CustomPrinter):
     printer.success(f"Added command '{args.name}' pointing to {script_path}")
 
 
-def edit_command(args, printer: CustomPrinter):
+def edit_command(args: argparse.Namespace, printer: CustomPrinter) -> None:
     wrapper_path = os.path.join(constants.WRAPPER_SCRIPTS_FOLDER, args.name)
     if not os.path.exists(wrapper_path):
         printer.error(f"Command not found: {args.name}")
@@ -133,7 +133,7 @@ def edit_command(args, printer: CustomPrinter):
     printer.success(f"Edited command '{args.name}'")
 
 
-def delete_command(args, printer: CustomPrinter):
+def delete_command(args: argparse.Namespace, printer: CustomPrinter) -> None:
     wrapper_path = os.path.join(constants.WRAPPER_SCRIPTS_FOLDER, args.name)
     symlink_path = os.path.join(constants.USER_BIN_DIR, args.name)
 
@@ -150,7 +150,7 @@ def delete_command(args, printer: CustomPrinter):
     printer.success(f"Deleted command '{args.name}'")
 
 
-def list_commands(printer: CustomPrinter):
+def list_commands(printer: CustomPrinter) -> None:
     """List all installed commands with their target scripts"""
     if not os.path.exists(constants.WRAPPER_SCRIPTS_FOLDER):
         printer.warn("Wrapper scripts folder missing.")
@@ -178,7 +178,7 @@ def list_commands(printer: CustomPrinter):
     printer.print(table)
 
 
-def install(args):
+def install(args: argparse.Namespace) -> None:
     printer = CustomPrinter(args.debug)
 
     # Create necessary directories
@@ -234,7 +234,7 @@ def install(args):
         sys.exit(1)
 
 
-def uninstall(args):
+def uninstall(args: argparse.Namespace) -> None:
     printer = CustomPrinter(args.debug)
     try:
         # Check if paths exist
@@ -298,15 +298,12 @@ def main() -> None:
     printer = CustomPrinter(args.debug)
 
     if args.install:
-        install(args)
-        return
+        return install(args)
     elif args.uninstall:
-        uninstall(args)
-        return
+        return uninstall(args)
 
     if args.version:
-        printer.info(f"v{constants.VERSION}")
-        return
+        return printer.info(f"v{constants.VERSION}")
 
     if args.action:
         try:
