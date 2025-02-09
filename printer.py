@@ -7,28 +7,28 @@ class CustomPrinter(Console):
         super().__init__()
         self.is_debug = is_debug
 
-    def success(self, message):
+    def success(self, message: str):
         """Print success messages with enhanced formatting"""
         self._print_formatted("[✓]", message, "green", "bold")
 
-    def error(self, message):
+    def error(self, message: str):
         """Print error messages with enhanced formatting"""
         self._print_formatted("[✗]", message, "red", "bold")
 
-    def info(self, message):
+    def info(self, message: str):
         """Print info messages with enhanced formatting"""
         self._print_formatted("[ℹ]", message, "cyan")
 
-    def warn(self, message):
+    def warn(self, message: str):
         """Print warning messages with enhanced formatting"""
         self._print_formatted("[⚠]", message, "yellow", "bold")
 
-    def debug(self, message):
+    def debug(self, message: str):
         """Print debug messages with enhanced formatting"""
         if self.is_debug:
             self._print_formatted("[⚙]", message, "magenta", "dim")
 
-    def _print_formatted(self, symbol, message, color, *styles):
+    def _print_formatted(self, symbol: str, message: str, color: str, *styles: iter):
         text = Text()
         text.append(f"{symbol} ", style=color)
         text.append(message, style=" ".join([color] + list(styles)))
