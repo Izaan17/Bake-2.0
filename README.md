@@ -3,6 +3,21 @@
 Bake is a simple tool that makes it easy to convert your Python scripts into terminal commands. Instead of typing
 `python3 /path/to/your/script.py`, you can create simple command aliases that run your scripts from anywhere.
 
+## Why I Made This Tool
+
+As a developer, I often found myself running various Python scripts from different directories, which required typing
+long file paths and using `python3` every time. This was not only inefficient but also cumbersome. I wanted a way to
+quickly execute my scripts as if they were native terminal commands, without manually adding them to my system's PATH or
+creating shell aliases. Thus, Bake was born—a lightweight, user-friendly tool to simplify command management for Python
+scripts.
+
+## Purpose and Need
+
+Bake addresses a common problem faced by developers, sysadmins, and automation enthusiasts who frequently use Python
+scripts. Instead of repeatedly navigating directories and running scripts with `python3 script.py`, Bake allows users to
+create system-wide aliases with ease. It eliminates the need for manual shell configurations and provides a seamless way
+to manage script-based commands across different shell environments.
+
 ## Features
 
 - Convert Python scripts into system-wide commands
@@ -151,3 +166,4 @@ actions:
 - Python 3.6+
 - Unix-like operating system (Linux, macOS)
 - Either bash, zsh, or fish
+
