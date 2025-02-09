@@ -101,13 +101,17 @@ bake --uninstall --hard
 
 This will show you what commands will be removed and ask for confirmation.
 
+> ⚠️ Warning: Hard uninstall will remove all commands created with Bake. Make sure to back up any important script paths
+> before proceeding.
+
 To skip the confirmation prompt:
 
 ```bash
 bake --uninstall --hard -f
 ```
 
-> ⚠️ Warning: Hard uninstall will remove all commands created with Bake. Make sure to back up any important script paths
+> ⚠️ Warning: Hard uninstall will remove all commands created with Bake. **With the -f flag you are skipping the
+> confirmation prompt**. Make sure to back up any important script paths
 > before proceeding.
 
 ## File Structure
