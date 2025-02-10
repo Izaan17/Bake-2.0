@@ -65,7 +65,9 @@ source ~/.config/fish/config.fish
 ### Example File `hello.py`
 
 ```python
-print("hello world")
+import sys
+
+print(f"Hello {sys.argv[1]}!")
 ```
 
 ### Add a new command
@@ -77,6 +79,18 @@ bake add hello ~/scripts/hello.py
 ```
 
 Now you can run `hello` from anywhere in your terminal.
+
+Input:
+
+`
+hello John
+`
+
+Output:
+
+`
+Hello John!
+`
 
 ### List all commands
 
