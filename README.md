@@ -35,13 +35,19 @@ git clone https://github.com/Izaan17/Bake-2.0.git
 cd bake
 ```
 
-2. Install bake:
+2. Install the project requirements:
+
+```bash
+pip install -r requirements.txt
+```
+
+3. Install bake:
 
 ```bash
 python bake.py --install
 ```
 
-3. Restart your terminal or source your shell configuration:
+4. Restart your terminal or source your shell configuration:
 
 ```bash
 # For bash
