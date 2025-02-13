@@ -163,7 +163,7 @@ def list_commands(printer: CustomPrinter) -> None:
 
     table = Table(show_header=True, header_style="bold", box=rich.box.SIMPLE)
     table.add_column("#", style="dim", width=6, header_style="blue", justify="center")
-    table.add_column("Command Name", min_width=20, justify="center")
+    table.add_column("Command Name", min_width=20, justify="left")
     table.add_column("Script Location", min_width=12)
 
     # Add all command information to the table
