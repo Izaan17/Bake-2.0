@@ -183,7 +183,7 @@ actions:
 
 ## Requirements
 
-- Python 3.6+
+- Python 3.10+
 - Unix-like operating system (Linux, macOS)
 - Either bash, zsh, or fish
 
