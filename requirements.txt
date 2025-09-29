@@ -1,1 +1,7 @@
-rich==13.9.4
+# Core dependencies
+rich>=13.0.0,<14.0.0
+
+# Optional dependencies for enhanced functionality
+# These are not required but can improve the experience
+# colorama>=0.4.0  # For better Windows support
+# click>=8.0.0     # For better CLI experience (future enhancement)

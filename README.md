@@ -21,18 +21,33 @@ to manage script-based commands across different shell environments.
 ## Features
 
 - Convert Python scripts into system-wide commands
-- Add, edit, delete, and list your commands
+- Add, edit, delete, rename, and list your commands
+- Automatic update system with GitHub integration
+- Robust error handling and validation
+- Comprehensive logging system
 - No sudo required - everything is installed in your user space
 - Automatic PATH management
 - Works with bash, zsh, and fish shells
+- Reserved command name protection
+- Safe file operations with cleanup
+- Health check and diagnostics
 
 ## Installation
+
+### Option 1: Pip Installation (Recommended)
+
+```bash
+pip install bake-command-manager
+bake --install
+```
+
+### Option 2: Manual Installation
 
 1. Clone this repository:
 
 ```bash
 git clone https://github.com/Izaan17/Bake-2.0.git
-cd bake
+cd Bake-2.0
 ```
 
 2. Install the project requirements:
@@ -47,7 +62,9 @@ pip install -r requirements.txt
 python bake.py --install
 ```
 
-4. Restart your terminal or source your shell configuration:
+### Post-Installation
+
+After installation, restart your terminal or source your shell configuration:
 
 ```bash
 # For bash
@@ -58,6 +75,14 @@ source ~/.zshrc
 
 # For fish
 source ~/.config/fish/config.fish
+```
+
+### Verify Installation
+
+Check if everything is working correctly:
+
+```bash
+bake health
 ```
 
 ## Usage
@@ -82,15 +107,11 @@ Now you can run `hello` from anywhere in your terminal.
 
 Input:
 
-`
-hello John
-`
+`hello John`
 
 Output:
 
-`
-Hello John!
-`
+`Hello John!`
 
 ### List all commands
 
@@ -114,6 +135,30 @@ Remove a command:
 
 ```bash
 bake delete hello
+```
+
+### Rename a command
+
+Rename an existing command:
+
+```bash
+bake rename hello greet
+```
+
+### Update Bake
+
+Update Bake to the latest version:
+
+```bash
+bake update
+```
+
+### Health check
+
+Check installation health and diagnose issues:
+
+```bash
+bake health
 ```
 
 ## Uninstalling
@@ -165,25 +210,64 @@ Bake creates the following directory structure in your home directory:
 ## Options
 
 ```bash
-bake [-h] [-i] [-d] [--uninstall] {add,edit,delete,list} ...
+bake [-h] [-i] [-d] [--uninstall] [--hard] [-f] [-v] {add,edit,delete,rename,update,health,list} ...
 
 optional arguments:
   -h, --help     show this help message and exit
   -i, --install  Install bake
-  -d, --debug    Enable debug output
+  -d, --debug    Enable debug output and logging
   --uninstall    Uninstall bake
+  --hard         Also remove all bake command aliases during uninstall
+  -f, --force    Skip confirmation prompts
+  -v, --version  Outputs the current version number
 
 actions:
-  {add,edit,delete,list}
+  {add,edit,delete,rename,update,health,list}
     add          Add a new command
     edit         Edit an existing command
     delete       Delete an existing command
+    rename       Rename an existing command
+    update       Update Bake to the latest version
+    health       Check installation health and diagnose issues
     list         List all installed commands
 ```
+
+## New Features & Improvements
+
+### Enhanced Validation
+
+- **Command Name Validation**: Ensures command names follow proper naming conventions
+- **Reserved Name Protection**: Prevents using system command names like `python`, `git`, `ls`, etc.
+- **Script Path Validation**: Validates that script files exist and are readable Python files
+
+### Update System
+
+- **Automatic Updates**: Check for updates from GitHub releases
+- **One-Click Updates**: Update with a single `bake update` command
+- **Release Notes**: View what's new in each update
+- **Safe Updates**: Automatic backup and rollback on failure
+- **Update Notifications**: Get notified when updates are available
+
+### Improved Error Handling
+
+- **Safe File Operations**: All file operations include proper error handling and cleanup
+- **Detailed Error Messages**: Clear, actionable error messages for better debugging
+- **Graceful Degradation**: Partial failures are handled gracefully with appropriate warnings
+
+### Logging System
+
+- **Debug Logging**: Comprehensive logging when using `--debug` flag
+- **Log Files**: Persistent logging to `~/.local/lib/bake/logs/bake.log`
+- **Operation Tracking**: All operations are logged for troubleshooting
+
+### Enhanced Wrapper Scripts
+
+- **Error Handling**: Wrapper scripts include proper error handling and validation
+- **Better Error Messages**: Clear error messages when scripts fail to execute
+- **Path Validation**: Wrapper scripts validate script existence before execution
 
 ## Requirements
 
 - Python 3.10+
 - Unix-like operating system (Linux, macOS)
 - Either bash, zsh, or fish
-
