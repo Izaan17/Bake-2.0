@@ -40,6 +40,11 @@ def create_parser() -> argparse.ArgumentParser:
 
     subparsers.add_parser("edit", help="Edit an existing command", parents=[name_parser])
     subparsers.add_parser("delete", help="Delete an existing command", parents=[name_parser])
+    
+    # Create parser for rename command that needs both old and new names
+    rename_parser = subparsers.add_parser("rename", help="Rename an existing command")
+    rename_parser.add_argument("old_name", help="Current name of the command")
+    rename_parser.add_argument("new_name", help="New name for the command")
 
     return parser
 
@@ -148,6 +153,81 @@ def delete_command(args: argparse.Namespace, printer: CustomPrinter) -> None:
     # Remove wrapper script
     os.remove(wrapper_path)
     printer.success(f"Deleted command '{args.name}'")
+
+
+def rename_command(args: argparse.Namespace, printer: CustomPrinter) -> None:
+    """Rename an existing command"""
+    old_name = args.old_name
+    new_name = args.new_name
+    
+    # Prevent renaming to "bake"
+    if new_name.lower() == "bake":
+        printer.error('Cannot rename command to "bake" as it would conflict with the main script.')
+        return
+    
+    # Prevent renaming to the same name
+    if old_name == new_name:
+        printer.error("Old name and new name are the same.")
+        return
+    
+    old_wrapper_path = os.path.join(constants.WRAPPER_SCRIPTS_FOLDER, old_name)
+    old_symlink_path = os.path.join(constants.USER_BIN_DIR, old_name)
+    new_wrapper_path = os.path.join(constants.WRAPPER_SCRIPTS_FOLDER, new_name)
+    new_symlink_path = os.path.join(constants.USER_BIN_DIR, new_name)
+    
+    # Check if old command exists
+    if not os.path.exists(old_wrapper_path):
+        printer.error(f"Command not found: {old_name}")
+        return
+    
+    # Check if new command already exists and confirm overwrite
+    if (os.path.exists(new_wrapper_path) or os.path.exists(new_symlink_path)) and not args.force:
+        printer.warn(f"Command '{new_name}' already exists!")
+        if os.path.exists(new_wrapper_path):
+            with open(new_wrapper_path, 'r') as f:
+                content = f.read()
+                current_script = content.split('script_path = "')[1].split('"')[0]
+                printer.info(f"Current script: {current_script}")
+        
+        confirm = printer.input("\nDo you want to overwrite it? [y/N]: ").lower()
+        if confirm != 'y':
+            printer.info("Command rename cancelled.")
+            return
+    
+    try:
+        # Read the current wrapper script to get the target script path
+        with open(old_wrapper_path, 'r') as f:
+            content = f.read()
+            script_path = content.split('script_path = "')[1].split('"')[0]
+        
+        # Create new wrapper script with the new name
+        with open(new_wrapper_path, 'w') as f:
+            f.write(create_wrapper_script(script_path))
+        
+        # Make new wrapper script executable
+        os.chmod(new_wrapper_path, 0o755)
+        
+        # Create new symlink
+        if os.path.exists(new_symlink_path):
+            os.remove(new_symlink_path)
+        os.symlink(new_wrapper_path, new_symlink_path)
+        
+        # Remove old symlink
+        if os.path.exists(old_symlink_path):
+            os.remove(old_symlink_path)
+        
+        # Remove old wrapper script
+        os.remove(old_wrapper_path)
+        
+        printer.success(f"Renamed command '{old_name}' to '{new_name}'")
+        
+    except Exception as e:
+        printer.error(f"Failed to rename command: {str(e)}")
+        # Clean up if something went wrong
+        if os.path.exists(new_wrapper_path):
+            os.remove(new_wrapper_path)
+        if os.path.exists(new_symlink_path):
+            os.remove(new_symlink_path)
 
 
 def list_commands(printer: CustomPrinter) -> None:
@@ -314,6 +394,8 @@ def main() -> None:
                     edit_command(args, printer)
                 case "delete":
                     delete_command(args, printer)
+                case "rename":
+                    rename_command(args, printer)
                 case "list":
                     list_commands(printer)
         except Exception as e:
